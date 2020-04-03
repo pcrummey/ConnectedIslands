@@ -14,7 +14,8 @@ import com.petercrummey.connectedislands.island.Island;
  */
 public class Islands
 {
-	List<Island> islands = new ArrayList<>();
+	private List<Island> islands = new ArrayList<>();
+	private boolean isSorted = false;
 	
 	public final List<Island> getIslands()
 	{
@@ -23,13 +24,33 @@ public class Islands
 	
 	public Islands addIsland(Island island)
 	{
-		this.islands.add(island);
+		try
+		{
+			this.find(island.getId());
+			//-----------------------------------------------------------------
+			// Cannot have duplicate Islands. If we got this far, an Island
+			// with the same id already exists. This is not valid.
+			//-----------------------------------------------------------------
+			throw new IllegalArgumentException("Cannot add duplicate island " + island.getId());
+		} catch(IndexOutOfBoundsException iobe)
+		{
+			this.islands.add(island);
+			this.isSorted = false;
+		}
 		return this;
 	}
 	
-	public Island find(int id)
+	/**
+	 * Given an Island <i>id</i>, find that Island within the collection of Islands
+	 * @param id Find an Island containing this <i>id</i>
+	 * @return The Island object with the requested <i>id</i>
+	 * @throws IndexOutOfBoundsException if given <i>id</i> is not an existing Island
+	 */
+	public Island find(Integer id)
 	{
 		Island foundIsland = null;
+		this.sortIslands();
+
 		for(Island island : this.islands)
 		{
 			if(island.getId() == id)
@@ -49,11 +70,21 @@ public class Islands
 	public String toString()
 	{
 		String islands = "";
+		this.sortIslands();
 		
 		for(Island island : this.islands)
 		{
-			islands = islands + island;
+			islands = islands + island + "\n";
 		}
 		return islands;
+	}
+	
+	private void sortIslands()
+	{
+		if(!this.isSorted)
+		{
+			Collections.sort(this.islands);
+			this.isSorted = true;
+		}
 	}
 }

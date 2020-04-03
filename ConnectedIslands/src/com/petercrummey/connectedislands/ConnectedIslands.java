@@ -41,7 +41,7 @@ public class ConnectedIslands {
 	{
 		List<Island> visited = new ArrayList<Island>();
 		System.out.println("Island " + islandOne + " connected to " + islandTwo + "?");
-		System.out.println(islands.find(islandOne).isConnected(islandTwo, visited));
+		System.out.println("**  " + islands.find(islandOne).isConnected(islandTwo, visited) + "  **");
 	}
 
 }
