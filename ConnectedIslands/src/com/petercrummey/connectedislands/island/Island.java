@@ -11,12 +11,12 @@ import java.util.List;
  * @author pcrummey
  *
  */
-public class Island
+public class Island implements Comparable<Island>
 {
-	private int id;
+	private Integer id;
 	private List<Island> connections = new ArrayList<>();
 	
-	public Island(int id)
+	public Island(Integer id)
 	{
 		this.id = id;
 	}
@@ -26,6 +26,11 @@ public class Island
 		return Collections.unmodifiableList(this.connections);
 	}
 	
+	/**
+	 * Add an Island connection to this Island
+	 * @param island Instance of Island to be added as a connection
+	 * @return The current Island (i.e., <i>this</i>)
+	 */
 	public Island addConnection(Island island)
 	{
 		// An Island cannot have a connection to itself
@@ -41,22 +46,28 @@ public class Island
 	@Override
 	public String toString()
 	{
-		String islandDetail = "Island " + this.id + " has immediate connections:\n";
+		String islandDetail = "Island " + this.id + " has immediate connections: ";
 		for(Island connection : this.connections)
 		{
-			islandDetail = islandDetail + "\t" + connection.getId() + "\n";
+			islandDetail = islandDetail + connection.getId() + " ";
 		}
 		return islandDetail;
 	}
 
-	public int getId()
+	public Integer getId()
 	{
 		return this.id;
 	}
 
-	public boolean isConnected(int id, List<Island> visited)
+	/**
+	 * Determine if this Island is connected to an Island with the given <i>id</i>
+	 * @param id The identifier of the Island to be searched for
+	 * @param visited A list of Islands that have already been visited
+	 * @return True of this Island is connected to an Island with the given <i>id</i>
+	 */
+	public boolean isConnected(Integer id, List<Island> visited)
 	{
-		System.out.println("\tIs " + this.id + " connected to " + id + "?");
+		System.out.println("\tIs " + this.id + " connected to " + id + "?  Visited: " + visited.toString());
 		if(this.id == id)
 		{
 			System.out.println("\t\tI'm the one you're looking for!");
@@ -72,5 +83,11 @@ public class Island
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(Island compareIsland)
+	{
+		return this.id.compareTo(compareIsland.getId());
 	}
 }

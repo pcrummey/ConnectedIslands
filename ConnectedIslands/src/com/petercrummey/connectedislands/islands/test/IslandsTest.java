@@ -25,6 +25,14 @@ class IslandsTest
 	{
 		assertEquals(islands.getIslands().size(), 1);
 		assertEquals(islands.getIslands().get(0).getId(), 0);
+		//---------------------------------------------------------------------
+		// Test duplicate Island
+		//---------------------------------------------------------------------
+		Exception ex = assertThrows(IllegalArgumentException.class, () ->
+		{
+			islands.addIsland(new Island(0));
+		});
+		assertEquals("Cannot add duplicate island 0", ex.getMessage());
 	}
 
 	@Test
