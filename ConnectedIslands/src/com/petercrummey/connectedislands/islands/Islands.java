@@ -22,6 +22,12 @@ public class Islands
 		return Collections.unmodifiableList(this.islands);
 	}
 	
+	/**
+	 * Add the given Island to the list of islands. Note that duplicate islands are not permitted.
+	 * @param island The Island to be added
+	 * @return The current Islands object (i.e., <i>this</i>)
+	 * @throws IllegalArgumentException if an Island already exists in the list with the same Island id
+	 */
 	public Islands addIsland(Island island)
 	{
 		try

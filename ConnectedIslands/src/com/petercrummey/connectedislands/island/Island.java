@@ -7,38 +7,42 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.petercrummey.connectedislands.connections.Bridge;
+import com.petercrummey.connectedislands.filters.BridgeFilters;
+
 /**
- * @author pcrummey
+ * @author Peter Crummey <peter@rose-reid.com>
  *
  */
 public class Island implements Comparable<Island>
 {
+	
 	private Integer id;
-	private List<Island> connections = new ArrayList<>();
+	private List<Bridge> connections = new ArrayList<>();
 	
 	public Island(Integer id)
 	{
 		this.id = id;
 	}
 
-	public final List<Island> getConnections()
+	public final List<Bridge> getConnections()
 	{
 		return Collections.unmodifiableList(this.connections);
 	}
-	
+
 	/**
 	 * Add an Island connection to this Island
-	 * @param island Instance of Island to be added as a connection
+	 * @param bridge The bridge that exists between this island and another
 	 * @return The current Island (i.e., <i>this</i>)
 	 */
-	public Island addConnection(Island island)
+	public Island addConnection(Bridge bridge)
 	{
 		// An Island cannot have a connection to itself
-		if(island.getId() == this.id)
+		if(bridge.getDestination().getId() == this.id)
 		{
 			System.out.println("WARNING: island " + this.id + " cannot be connected to itself.");
 		} else {
-			this.connections.add(island);
+			this.connections.add(bridge);
 		}
 		return this;
 	}
@@ -47,9 +51,9 @@ public class Island implements Comparable<Island>
 	public String toString()
 	{
 		String islandDetail = "Island " + this.id + " has immediate connections: ";
-		for(Island connection : this.connections)
+		for(Bridge connection : this.connections)
 		{
-			islandDetail = islandDetail + connection.getId() + " ";
+			islandDetail = islandDetail + connection.getDestination().getId() + " " + connection.getType() + " ";
 		}
 		return islandDetail;
 	}
@@ -65,21 +69,21 @@ public class Island implements Comparable<Island>
 	 * @param visited A list of Islands that have already been visited
 	 * @return True of this Island is connected to an Island with the given <i>id</i>
 	 */
-	public boolean isConnected(Integer id, List<Island> visited)
+	public boolean isConnected(Integer id, BridgeFilters filters, List<Island> visited)
 	{
 		System.out.println("\tIs " + this.id + " connected to " + id + "?  Visited: " + visited.toString());
 		if(this.id == id)
 		{
 			System.out.println("\t\tI'm the one you're looking for!");
 			return true;
-		} else {
-			if(!visited.contains(this))  {  visited.add(this);  }
-			for(Island anIsland : this.connections)
+		}
+		if(visited.stream().allMatch(matchIsland -> matchIsland.getId() != this.getId()))  {  visited.add(this);  }
+		for(Bridge bridge : this.connections)
+		{
+			if(!filters.apply(bridge))  {  System.out.println("\t\tBridge exists but was filtered out: " + bridge);  }
+			if(!visited.contains(bridge.getDestination())  &&  filters.apply(bridge)  &&  bridge.getDestination().isConnected(id, filters, visited))
 			{
-				if(!visited.contains(anIsland)  &&  anIsland.isConnected(id, visited))
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
