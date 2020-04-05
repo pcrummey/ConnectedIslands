@@ -23,8 +23,8 @@ class IslandsTest
 	@Test
 	void testAddIsland()
 	{
-		assertEquals(islands.getIslands().size(), 1);
-		assertEquals(islands.getIslands().get(0).getId(), 0);
+		assertEquals(1, islands.getIslands().size());
+		assertEquals(0, islands.getIslands().get(0).getId());
 		//---------------------------------------------------------------------
 		// Test duplicate Island
 		//---------------------------------------------------------------------

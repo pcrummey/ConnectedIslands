@@ -3,6 +3,8 @@
  */
 package com.petercrummey.connectedislands.connections;
 
+import java.math.BigDecimal;
+
 import com.petercrummey.connectedislands.island.Island;
 
 /**
@@ -35,6 +37,7 @@ public class Bridge
 	private Island origin;
 	private Island destination;
 	private BridgeType type;
+	private BigDecimal toll = BigDecimal.ZERO;
 
 	public Island getOrigin()
 	{
@@ -62,6 +65,26 @@ public class Bridge
 	{
 		this.type = type;
 		return this;
+	}
+	
+	public BigDecimal getToll()
+	{
+		return toll;
+	}
+	public Bridge setToll(BigDecimal toll)
+	{
+		this.toll = toll;
+		return this;
+	}
+	
+	public BigDecimal getBridgeCrossingCost()
+	{
+		BigDecimal totalCost = BigDecimal.ZERO;
+		if(this.type == BridgeType.TOLL_BRIDGE)
+		{
+			totalCost = totalCost.add(this.toll);
+		}
+		return totalCost;
 	}
 	
 	@Override
