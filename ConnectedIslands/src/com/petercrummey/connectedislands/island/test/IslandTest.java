@@ -14,6 +14,7 @@ import com.petercrummey.connectedislands.filters.BridgeFilters;
 import com.petercrummey.connectedislands.filters.NoFilter;
 import com.petercrummey.connectedislands.filters.NoTollBridgeFilter;
 import com.petercrummey.connectedislands.island.Island;
+import com.petercrummey.connectedislands.trip.Trip;
 
 class IslandTest {
 
@@ -46,8 +47,10 @@ class IslandTest {
 	@Test
 	void testIsConnected()
 	{
+		Trip trip = new Trip();
+		BigDecimal twoFiftyOne = new BigDecimal(2.51);
 		// Test island with no connections
-		assertFalse(island.isConnected(1, new BridgeFilters().addFilter(new NoFilter())));
+		assertFalse(island.isConnected(1, new BridgeFilters().addFilter(new NoFilter()), trip));
 
 		Island islandOne = new Island(1);
 		island.addConnection(new Bridge()
@@ -55,14 +58,14 @@ class IslandTest {
 				  .setDestination(islandOne)
 				  .setType(BridgeType.FREE_BRIDGE));
 		System.out.println("#1");
-		assertTrue(island.isConnected(1, new BridgeFilters().addFilter(new NoFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertTrue(island.isConnected(1, new BridgeFilters().addFilter(new NoFilter()), trip));
+		System.out.println("Route: " + trip);
 		System.out.println("#2");
-		assertTrue(island.isConnected(1, new BridgeFilters().addFilter(new NoFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertTrue(island.isConnected(1, new BridgeFilters().addFilter(new NoFilter()), trip));
+		System.out.println("Route: " + trip);
 		System.out.println("#3");
-		assertFalse(island.isConnected(2, new BridgeFilters().addFilter(new NoFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertFalse(island.isConnected(2, new BridgeFilters().addFilter(new NoFilter()), trip));
+		System.out.println("Route: " + trip);
 		//---------------------------------------------------------------------
 		// Test an island that is indirectly connected
 		// 0 is connected to 1
@@ -81,8 +84,8 @@ class IslandTest {
 				  .setDestination(islandThree)
 				  .setType(BridgeType.FREE_BRIDGE));
 		System.out.println("#4");
-		assertTrue(island.isConnected(3, new BridgeFilters().addFilter(new NoFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertTrue(island.isConnected(3, new BridgeFilters().addFilter(new NoFilter()), trip));
+		System.out.println("Route: " + trip);
 		//---------------------------------------------------------------------
 		// So far we've only tested linear connections. Need to test the case
 		// where an island has multiple connections and must iterate through
@@ -115,8 +118,8 @@ class IslandTest {
 				  .setDestination(islandSeven)
 				  .setType(BridgeType.FREE_BRIDGE));
 		System.out.println("#5");
-		assertTrue(island.isConnected(7, new BridgeFilters().addFilter(new NoFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertTrue(island.isConnected(7, new BridgeFilters().addFilter(new NoFilter()), trip));
+		System.out.println("Route: " + trip);
 		//---------------------------------------------------------------------
 		// Need to test IslandFilters now. Change search so that toll bridges
 		// are not taken.
@@ -132,10 +135,10 @@ class IslandTest {
 				  .setOrigin(islandSix)
 				  .setDestination(islandEight)
 				  .setType(BridgeType.TOLL_BRIDGE)
-				  .setToll(new BigDecimal(2.51)));
+				  .setToll(twoFiftyOne));
 		System.out.println("#7");
-		assertFalse(island.isConnected(8, new BridgeFilters().addFilter(new NoTollBridgeFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertFalse(island.isConnected(8, new BridgeFilters().addFilter(new NoTollBridgeFilter()), trip));
+		System.out.println("Route: " + trip);
 		//---------------------------------------------------------------------
 		// Need to test IslandFilters now. Change search so that toll bridges
 		// are not taken.
@@ -152,8 +155,8 @@ class IslandTest {
 				  .setDestination(islandEight)
 				  .setType(BridgeType.FREE_BRIDGE));
 		System.out.println("#8");
-		assertTrue(island.isConnected(8, new BridgeFilters().addFilter(new NoTollBridgeFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertTrue(island.isConnected(8, new BridgeFilters().addFilter(new NoTollBridgeFilter()), trip));
+		System.out.println("Route: " + trip);
 		//---------------------------------------------------------------------
 		// Need to test IslandFilters now. Change search so that toll bridges
 		// are not taken.
@@ -171,10 +174,15 @@ class IslandTest {
 				  .setOrigin(islandEight)
 				  .setDestination(islandNine)
 				  .setType(BridgeType.TOLL_BRIDGE)
-				  .setToll(new BigDecimal(2.51)));
+				  .setToll(twoFiftyOne));
 		System.out.println("#9");
-		assertTrue(island.isConnected(9, new BridgeFilters().addFilter(new NoFilter())));
-		System.out.println("Route: " + island.getTrip());
+		assertTrue(island.isConnected(9, new BridgeFilters().addFilter(new NoFilter()), trip));
+		assertEquals(twoFiftyOne, trip.getTotalCost());
+		assertEquals(7, trip.getRoute().size());
+		assertEquals(new Integer(9), trip.getRoute().get(0).getDestination().getId());
+		assertEquals(new Integer(8), trip.getRoute().get(0).getOrigin().getId());
+		
+		System.out.println("Route: " + trip);
 	}
 
 }

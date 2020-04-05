@@ -19,7 +19,6 @@ public class Island implements Comparable<Island>
 {
 	private Integer id;
 	private List<Bridge> connections = new ArrayList<>();
-	private static Trip trip = new Trip();
 	
 	public Island(Integer id)
 	{
@@ -64,21 +63,18 @@ public class Island implements Comparable<Island>
 		return this.id;
 	}
 
-	public Trip getTrip()
-	{
-		return trip;
-	}
-
 	/**
 	 * Determine if this Island is connected to an Island with the given <i>id</i>
 	 * @param id The identifier of the Island to be searched for
 	 * @param filters BridgeFilters to apply to each bridge 
+	 * @param trip The route taken to get from origin to destination 
 	 * @return True of this Island is connected to an Island with the given <i>id</i>
 	 */
-	public boolean isConnected(Integer id, BridgeFilters filters)
+	public boolean isConnected(Integer id, BridgeFilters filters, Trip trip)
 	{
 		trip.clear();
-		return this.isConnected(id, filters, new ArrayList<>());
+		boolean connected = this.isConnected(id, filters, new ArrayList<>(), trip);
+		return connected;
 	}
 	
 	/**
@@ -88,7 +84,7 @@ public class Island implements Comparable<Island>
 	 * @param visited A list of Islands that have already been visited
 	 * @return True of this Island is connected to an Island with the given <i>id</i>
 	 */
-	private boolean isConnected(Integer id, BridgeFilters filters, List<Island> visited)
+	private boolean isConnected(Integer id, BridgeFilters filters, List<Island> visited, Trip trip)
 	{
 		System.out.println("\tIs " + this.id + " connected to " + id + "?  Visited: " + visited.toString());
 		if(this.id == id)
@@ -100,7 +96,7 @@ public class Island implements Comparable<Island>
 		for(Bridge bridge : this.connections)
 		{
 			if(!filters.apply(bridge))  {  System.out.println("\t\tBridge exists but was filtered out: " + bridge);  }
-			if(!visited.contains(bridge.getDestination())  &&  filters.apply(bridge)  &&  bridge.getDestination().isConnected(id, filters, visited))
+			if(!visited.contains(bridge.getDestination())  &&  filters.apply(bridge)  &&  bridge.getDestination().isConnected(id, filters, visited, trip))
 			{
 				trip.addBridgeToRoute(bridge);
 				trip.addCost(bridge.getBridgeCrossingCost());
