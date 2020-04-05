@@ -3,13 +3,9 @@
  */
 package com.petercrummey.connectedislands;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.petercrummey.connectedislands.filters.BridgeFilters;
 import com.petercrummey.connectedislands.filters.BridgeFiltersFactory;
 import com.petercrummey.connectedislands.filters.NoFilter;
-import com.petercrummey.connectedislands.island.Island;
 import com.petercrummey.connectedislands.islands.Islands;
 import com.petercrummey.connectedislands.islands.IslandsFactory;
 
@@ -44,9 +40,8 @@ public class ConnectedIslands {
 	
 	private static void areTheyConnected(int islandOne, int islandTwo, BridgeFilters filter)
 	{
-		List<Island> visited = new ArrayList<Island>();
 		System.out.println("Island " + islandOne + " connected to " + islandTwo + "?");
-		System.out.println("**  " + islands.find(islandOne).isConnected(islandTwo, filter, visited) + "  **");
+		System.out.println("**  " + islands.find(islandOne).isConnected(islandTwo, filter) + "  **");
 	}
 
 }

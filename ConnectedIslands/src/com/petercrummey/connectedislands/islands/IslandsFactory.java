@@ -3,6 +3,8 @@
  */
 package com.petercrummey.connectedislands.islands;
 
+import java.math.BigDecimal;
+
 import com.petercrummey.connectedislands.connections.Bridge;
 import com.petercrummey.connectedislands.connections.Bridge.BridgeType;
 import com.petercrummey.connectedislands.island.Island;
@@ -105,7 +107,8 @@ public class IslandsFactory
 	       .addConnection(new Bridge()
 					  .setOrigin(islands.find(6))
 					  .setDestination(islands.find(8))
-					  .setType(BridgeType.TOLL_BRIDGE));
+					  .setType(BridgeType.TOLL_BRIDGE)
+					  .setToll(new BigDecimal(2.50)));
 		//---------------------------------------------------------------------
 		// 7 connected to 6
 		//---------------------------------------------------------------------
